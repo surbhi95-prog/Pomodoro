@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import React, { useState,useEffect, use } from 'react';
 import './App.css';
 
@@ -11,6 +12,8 @@ import idleGif from "./assets/idle.gif";
 import workGif from "./assets/work.gif";
 import breakGif from "./assets/break.gif";
 import closeBtn from "./assets/close.png";
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { getDiffieHellman } from 'crypto';
 
 function App() {
@@ -31,7 +34,7 @@ function App() {
   const [image,setImage] = useState(playImg);
 
   const cheerMessages = [
-    "You can di it",
+    "You can do it",
     "I believe in You",
     "Hwaiting",
     "Keep going"
@@ -45,6 +48,7 @@ function App() {
   ];
 
   // FOR SETTING ENCOURAGEMENT MESSAGE
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(()=>
   {
     let messageInterval : NodeJS.Timeout;
