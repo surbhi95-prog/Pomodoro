@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState,useEffect, use } from 'react';
 import './App.css';
 
 import playImg from "./assets/play.png";
@@ -11,14 +11,25 @@ import idleGif from "./assets/idle.gif";
 import workGif from "./assets/work.gif";
 import breakGif from "./assets/break.gif";
 import closeBtn from "./assets/close.png";
+import { getDiffieHellman } from 'crypto';
 
 function App() {
-  const [timeLeft,setTimeLeft]= useState(25*60);
+
+  const [timeLeft,setTimeLeft]= useState(1*60);
   const [isRunning,setIsRunning] = useState(false);
 
   const [isBreak,setIsBreak] = useState(false);
 
   const [encouragement,setEncouragement] = useState('');
+
+  const [breakButtonImage,setbreakButtonImage] = useState(breakBtn);
+  const [workButtonImage, setWorkButtonImage] = useState(workBtn);
+
+  const [gifImage,setGifImage] = useState(idleGif);
+
+  // start button img
+  const [image,setImage] = useState(playImg);
+
   const cheerMessages = [
     "You can di it",
     "I believe in You",
@@ -70,6 +81,13 @@ function App() {
     return () => clearInterval(timer);
   },[isRunning,timeLeft]);
 
+
+  // set individual switch mode to false
+  useEffect(()=>
+  {
+    switchMode(false);
+  },[]);
+
   const formatTime = (seconds:number): string =>
   {
     const m= Math.floor(seconds/60).toString().padStart(2,'0');
@@ -82,8 +100,12 @@ function App() {
   const switchMode =(breakMode:boolean) =>
   {
     setIsBreak(breakMode);
-    setTimeLeft(breakMode? 5*60: 25*60);
+    setTimeLeft(breakMode? 5*60: 1*60);
     setIsRunning(true);
+    setbreakButtonImage(breakMode ? breakBtnClicked: breakBtn);
+    setWorkButtonImage(breakMode? workBtn: workBtnClicked);
+
+    setGifImage(breakMode? breakGif : workGif);
   }
 
 
@@ -92,36 +114,43 @@ function App() {
     if(!isRunning)
     {
       setIsRunning(true); // to start the timer
+      setGifImage(isBreak? breakGif : workGif);
+
+      setImage(resetImg);
     }
     else{
       setIsRunning(false); // to stop the timer if the button clicked again
-      setTimeLeft(isBreak ? 5*60: 25*60); // to reset the time 
+      setTimeLeft(isBreak ? 5*60: 1*60); // to reset the time 
+      setGifImage(idleGif);
+      setImage(playImg);
     }
   }
 
+  const containerClass = `home-container ${isRunning ? 'background-green' : ''}`; 
   return (
-  <div style={{position:'relative'}}>
+  <div className={containerClass} style={{position:'relative'}}>
     <div>
-      <button className="colseButton">
-        Close
+      <button className="close-button">
+        <img src={closeBtn} alt="Close"/>
       </button>
     </div>
 
     <div className='home-content'>
       <div className='home-controls'>
         <button className='image-button' onClick={()=>switchMode(false)}>
-          Work
+          <img src={workButtonImage} alt="Work"/>
         </button>
-        <button className='imge-button' onClick={()=>switchMode(true)}>
-          Break
+        <button className='image-button' onClick={()=>switchMode(true)}>
+          <img src={breakButtonImage} alt="Break"/>
         </button>
       </div>
       <p className={`encouragement-text ${!isRunning ? "hidden":""}`}>
         {encouragement}
       </p>
       <h1 className='home-timer'>{formatTime(timeLeft)}</h1>
+      <img className='gif-image' src={gifImage} alt="Timer Status"/>
       <button className='home-button' onClick={handleClick}>
-        Start
+       <img src={image} alt="Button Icon"/>
       </button>
     </div>
 
